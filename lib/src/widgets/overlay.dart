@@ -142,6 +142,8 @@ class DescribedFeatureOverlay extends StatefulWidget {
   final Future<bool> Function() onBackgroundTap;
 
   final bool boundWithSize;
+  final Offset backgroundCenter;
+  final double backgroundRadius;
 
   const DescribedFeatureOverlay({
     Key key,
@@ -170,6 +172,8 @@ class DescribedFeatureOverlay extends StatefulWidget {
     this.backgroundDismissible = false,
     this.onBackgroundTap,
     this.overlayColor,
+    this.backgroundCenter,
+    this.backgroundRadius,
   })  : assert(featureId != null),
         assert(tapTarget != null),
         assert(child != null),
@@ -656,8 +660,8 @@ class _DescribedFeatureOverlayState extends State<DescribedFeatureOverlay>
             delegate: BackgroundContentLayoutDelegate(
               overflowMode: widget.overflowMode,
               contentPosition: contentPosition,
-              backgroundCenter: backgroundCenter,
-              backgroundRadius: backgroundRadius,
+              backgroundCenter: widget.backgroundCenter ?? backgroundCenter,
+              backgroundRadius: widget.backgroundRadius ?? backgroundRadius,
               anchor: anchor,
               contentOffsetMultiplier: contentOffsetMultiplier,
               state: _state,
