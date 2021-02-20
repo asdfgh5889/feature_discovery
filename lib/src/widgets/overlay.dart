@@ -141,8 +141,11 @@ class DescribedFeatureOverlay extends StatefulWidget {
   /// all of the current steps are dismissed.
   final Future<bool> Function() onBackgroundTap;
 
+  final bool boundWithSize;
+
   const DescribedFeatureOverlay({
     Key key,
+    this.boundWithSize = true,
     @required this.featureId,
     @required this.tapTarget,
     this.backgroundColor,
@@ -704,6 +707,7 @@ class _DescribedFeatureOverlayState extends State<DescribedFeatureOverlay>
             color: widget.targetColor,
             onPressed: tryCompleteThis,
             child: widget.tapTarget,
+            boundWithSize: widget.boundWithSize,
           ),
         ],
       ),
@@ -888,6 +892,7 @@ class _TapTarget extends StatelessWidget {
   final Widget child;
   final Color color;
   final VoidCallback onPressed;
+  final bool boundWithSize;
 
   const _TapTarget({
     Key key,
@@ -897,6 +902,7 @@ class _TapTarget extends StatelessWidget {
     @required this.color,
     @required this.state,
     @required this.transitionProgress,
+    this.boundWithSize = true,
   })  : assert(anchor != null),
         assert(child != null),
         assert(state != null),
@@ -949,8 +955,8 @@ class _TapTarget extends StatelessWidget {
   Widget build(BuildContext context) => CenterAbout(
         position: anchor,
         child: Container(
-          height: 2 * radius,
-          width: 2 * radius,
+          height: boundWithSize ? 2 * radius : null,
+          width: boundWithSize ? 2 * radius : null,
           child: Opacity(
             opacity: opacity,
             child: RawMaterialButton(

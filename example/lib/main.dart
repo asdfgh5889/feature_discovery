@@ -68,7 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               DescribedFeatureOverlay(
                 featureId: feature7,
-                tapTarget: icon1,
+                tapTarget: Container(
+                  width: 300,
+                  height: 100,
+                  color: Colors.red,
+                  child: SizedBox(),
+                ),
+                enablePulsingAnimation: false,
                 backgroundColor: Colors.blue,
                 contentLocation: ContentLocation.below,
                 title: const Text('Find the fastest route'),
