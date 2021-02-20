@@ -644,7 +644,8 @@ class _DescribedFeatureOverlayState extends State<DescribedFeatureOverlay>
     }
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: this.widget.overlayColor),
+      decoration:
+          BoxDecoration(color: this.widget.overlayColor ?? Colors.transparent),
       child: Stack(
         children: <Widget>[
           background,
