@@ -30,6 +30,10 @@ class DescribedFeatureOverlay extends StatefulWidget {
   /// If null, defaults to [ThemeData.primaryColor].
   final Color backgroundColor;
 
+  /// The overlay color of feature
+  /// If null, defaults to [Colors.transparent]
+  final Color overlayColor;
+
   /// The opacity of the large circle, where the text sits on.
   /// If null, defaults to 0.96.
   final double backgroundOpacity;
@@ -162,6 +166,7 @@ class DescribedFeatureOverlay extends StatefulWidget {
     this.barrierDismissible = true,
     this.backgroundDismissible = false,
     this.onBackgroundTap,
+    this.overlayColor,
   })  : assert(featureId != null),
         assert(tapTarget != null),
         assert(child != null),
@@ -638,65 +643,69 @@ class _DescribedFeatureOverlayState extends State<DescribedFeatureOverlay>
       );
     }
 
-    return Stack(
-      children: <Widget>[
-        background,
-        CustomMultiChildLayout(
-          delegate: BackgroundContentLayoutDelegate(
-            overflowMode: widget.overflowMode,
-            contentPosition: contentPosition,
-            backgroundCenter: backgroundCenter,
-            backgroundRadius: backgroundRadius,
-            anchor: anchor,
-            contentOffsetMultiplier: contentOffsetMultiplier,
+    return DecoratedBox(
+      decoration: BoxDecoration(color: this.widget.overlayColor),
+      child: Stack(
+        children: <Widget>[
+          background,
+          CustomMultiChildLayout(
+            delegate: BackgroundContentLayoutDelegate(
+              overflowMode: widget.overflowMode,
+              contentPosition: contentPosition,
+              backgroundCenter: backgroundCenter,
+              backgroundRadius: backgroundRadius,
+              anchor: anchor,
+              contentOffsetMultiplier: contentOffsetMultiplier,
+              state: _state,
+              transitionProgress: _transitionProgress,
+            ),
+            children: <Widget>[
+              LayoutId(
+                id: BackgroundContentLayout.background,
+                child: _Background(
+                  transitionProgress: _transitionProgress,
+                  color:
+                      widget.backgroundColor ?? Theme.of(context).primaryColor,
+                  defaultOpacity: widget.backgroundOpacity,
+                  state: _state,
+                  overflowMode: widget.overflowMode,
+                  tryDismissThisThenAll: tryDismissThisThenAll,
+                  backgroundDismissible: widget.backgroundDismissible,
+                  onBackgroundTap: widget.onBackgroundTap,
+                ),
+              ),
+              LayoutId(
+                id: BackgroundContentLayout.content,
+                child: Content(
+                  state: _state,
+                  transitionProgress: _transitionProgress,
+                  title: widget.title,
+                  description: widget.description,
+                  textColor: widget.textColor,
+                  overflowMode: widget.overflowMode,
+                  backgroundCenter: backgroundCenter,
+                  backgroundRadius: backgroundRadius,
+                  width: contentWidth,
+                ),
+              ),
+            ],
+          ),
+          _Pulse(
             state: _state,
             transitionProgress: _transitionProgress,
+            anchor: anchor,
+            color: widget.targetColor,
           ),
-          children: <Widget>[
-            LayoutId(
-              id: BackgroundContentLayout.background,
-              child: _Background(
-                transitionProgress: _transitionProgress,
-                color: widget.backgroundColor ?? Theme.of(context).primaryColor,
-                defaultOpacity: widget.backgroundOpacity,
-                state: _state,
-                overflowMode: widget.overflowMode,
-                tryDismissThisThenAll: tryDismissThisThenAll,
-                backgroundDismissible: widget.backgroundDismissible,
-                onBackgroundTap: widget.onBackgroundTap,
-              ),
-            ),
-            LayoutId(
-              id: BackgroundContentLayout.content,
-              child: Content(
-                state: _state,
-                transitionProgress: _transitionProgress,
-                title: widget.title,
-                description: widget.description,
-                textColor: widget.textColor,
-                overflowMode: widget.overflowMode,
-                backgroundCenter: backgroundCenter,
-                backgroundRadius: backgroundRadius,
-                width: contentWidth,
-              ),
-            ),
-          ],
-        ),
-        _Pulse(
-          state: _state,
-          transitionProgress: _transitionProgress,
-          anchor: anchor,
-          color: widget.targetColor,
-        ),
-        _TapTarget(
-          state: _state,
-          transitionProgress: _transitionProgress,
-          anchor: anchor,
-          color: widget.targetColor,
-          onPressed: tryCompleteThis,
-          child: widget.tapTarget,
-        ),
-      ],
+          _TapTarget(
+            state: _state,
+            transitionProgress: _transitionProgress,
+            anchor: anchor,
+            color: widget.targetColor,
+            onPressed: tryCompleteThis,
+            child: widget.tapTarget,
+          ),
+        ],
+      ),
     );
   }
 
