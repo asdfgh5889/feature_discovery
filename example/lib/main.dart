@@ -247,6 +247,7 @@ class _ContentState extends State<Content> {
           feature6,
           feature5
         },
+        {1: Duration(seconds: 2)},
       );
     });
     super.initState();

@@ -62,6 +62,8 @@ class Bloc {
 
   int _activeStepIndex;
 
+  Map<int, Duration> delays;
+
   String get activeFeatureId => _steps == null ||
           _activeStepIndex == null ||
           _activeStepIndex >= _steps.length ||
@@ -121,6 +123,9 @@ class Bloc {
   }
 
   Future<void> _nextStep() async {
+    if (delays != null && delays[_activeStepIndex] != null) {
+      await Future.delayed(delays[_activeStepIndex]);
+    }
     if (activeFeatureId != null) unawaited(_saveCompletionOf(activeFeatureId));
     _activeStepIndex++;
     _activeOverlays = 0;
